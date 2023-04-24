@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.XiguaVideo"
+        tools:targetApi="31">
+
+        <!--第一步：每个插件必须注册这里才能被识别为插件-->
+        <!--name固定media_plugin_api_impl-->
+        <!--value填写上面写的类完整包名-->
+        <meta-data
+            android:name="media_plugin_api_impl"
+            android:value="com.xiaocai.xiguavideo.PluginFactory" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <!--第二步：可选，方便调试-->
+                <!--name固定media_plugin_debug-->
+                <action android:name="media_plugin_debug" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+    </application>
+
+</manifest>
