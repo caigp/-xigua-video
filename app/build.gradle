@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.xiaocai.xiguavideo'
-    compileSdk 32
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.xiaocai.xiguavideo"

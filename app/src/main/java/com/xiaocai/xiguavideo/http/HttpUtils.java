@@ -25,9 +25,10 @@ public class HttpUtils {
         client.newCall(request).enqueue(callback);
     }
 
-    public static String syncGet(String requestTag, String url) {
+    public static String syncGet(String requestTag, String url, Headers headers) {
         Request request = new Request.Builder()
                 .get()
+                .headers(headers)
                 .tag(requestTag)
                 .url(url)
                 .build();

@@ -1,25 +1,36 @@
 package com.xiaocai.xiguavideo.page
 
-import android.util.Base64
 import android.util.Log
+import com.su.mediabox.pluginapi.action.ClassifyAction
 import com.su.mediabox.pluginapi.action.DetailAction
-import com.su.mediabox.pluginapi.action.PlayAction
-import com.su.mediabox.pluginapi.components.IHomePageDataComponent
+import com.su.mediabox.pluginapi.components.IMediaClassifyPageDataComponent
 import com.su.mediabox.pluginapi.data.BaseData
+import com.su.mediabox.pluginapi.data.ClassifyItemData
 import com.su.mediabox.pluginapi.data.MediaInfo1Data
-import com.su.mediabox.pluginapi.util.UIUtil.dp
 import com.xiaocai.xiguavideo.http.HttpUtils
 import okhttp3.Headers
 import org.json.JSONObject
 import java.net.URLEncoder
 
-class HomePageDataComponent : IHomePageDataComponent {
+class MediaClassifyPageDataComponent : IMediaClassifyPageDataComponent {
 
-    private val TAG = HomePageDataComponent::class.java.simpleName
+
+    private val TAG = MediaClassifyPageDataComponent::class.java.simpleName
 
     private var url: String? = null
 
-    override suspend fun getData(page: Int): List<BaseData> {
+    override suspend fun getClassifyItemData(): List<ClassifyItemData> {
+        return listOf(ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "666", "555")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "444", "333")
+        })
+    }
+
+    override suspend fun getClassifyData(
+        classifyAction: ClassifyAction,
+        page: Int
+    ): List<BaseData> {
         val data = mutableListOf<BaseData>()
 
         url = "https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more"
@@ -68,5 +79,4 @@ class HomePageDataComponent : IHomePageDataComponent {
 
         return data
     }
-
 }

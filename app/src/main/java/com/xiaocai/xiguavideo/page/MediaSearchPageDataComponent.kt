@@ -1,28 +1,27 @@
 package com.xiaocai.xiguavideo.page
 
-import android.util.Base64
 import android.util.Log
 import com.su.mediabox.pluginapi.action.DetailAction
-import com.su.mediabox.pluginapi.action.PlayAction
-import com.su.mediabox.pluginapi.components.IHomePageDataComponent
+import com.su.mediabox.pluginapi.components.IMediaSearchPageDataComponent
 import com.su.mediabox.pluginapi.data.BaseData
 import com.su.mediabox.pluginapi.data.MediaInfo1Data
-import com.su.mediabox.pluginapi.util.UIUtil.dp
+import com.su.mediabox.pluginapi.data.MediaInfo2Data
 import com.xiaocai.xiguavideo.http.HttpUtils
 import okhttp3.Headers
 import org.json.JSONObject
 import java.net.URLEncoder
 
-class HomePageDataComponent : IHomePageDataComponent {
+class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
 
-    private val TAG = HomePageDataComponent::class.java.simpleName
+    private val TAG = MediaSearchPageDataComponent::class.java.simpleName
 
     private var url: String? = null
 
-    override suspend fun getData(page: Int): List<BaseData> {
+    override suspend fun getSearchData(keyWord: String, page: Int): List<BaseData> {
         val data = mutableListOf<BaseData>()
 
-        url = "https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more"
+        val offset = (page - 1) * 10
+        url = "https://m.ixigua.com/video/m/search/search_content/?aid=3586&keyword=$keyWord&device_id=&offset=$offset&count=10"
         Log.d(TAG, "url=$url")
 
         val headers = Headers.Builder()
@@ -30,24 +29,27 @@ class HomePageDataComponent : IHomePageDataComponent {
             .build()
         val json = HttpUtils.syncGet(TAG, url, headers)
         val jsonObject = JSONObject(json)
-        val statusCode = jsonObject.optInt("status_code")
-        if (statusCode == 0) {
-            val dataJSONObject = jsonObject.getJSONObject("data")
-            val feedJSONObject = dataJSONObject.getJSONObject("channel_feed")
-            val dataJSONArray = feedJSONObject.getJSONArray("data")
+        val message = jsonObject.getString("message")
+        if ("success" == message) {
+            val dataJSONArray = jsonObject.getJSONArray("data")
             val length = dataJSONArray.length()
             for (i in 0 until length) {
-                val itemJSONObject = dataJSONArray[i] as JSONObject
-                val videoDataJSONObject = itemJSONObject.getJSONObject("data")
-                val groupId = videoDataJSONObject.getString("group_id")
+                val videoDataJSONObject = dataJSONArray[i] as JSONObject
+                val groupId = videoDataJSONObject.optString("group_id")
+                if (groupId == "") {
+                    continue
+                }
                 val play_count = videoDataJSONObject.optLong("play_count")
                 val duration = videoDataJSONObject.optInt("duration")
                 val publishTime = videoDataJSONObject.optLong("publish_time", 0)
                 val title = videoDataJSONObject.getString("title")
-                val coverImageUrl = videoDataJSONObject.getString("cover_image_url")
+                val video_detail_info = videoDataJSONObject.optJSONObject("video_detail_info")
+                val detail_video_large_image = video_detail_info?.optJSONObject("detail_video_large_image")
+                val coverImageUrl = detail_video_large_image?.optString("url")
+
                 val userInfoJSONObject =  videoDataJSONObject.getJSONObject("user_info")
                 val userName = userInfoJSONObject.getString("name")
-                val desc = userInfoJSONObject.getString("author_desc")
+                val desc = videoDataJSONObject.optString("author_desc")
                 val url = "https://m.ixigua.com/video/$groupId?title= " +
                         URLEncoder.encode(title, "UTF-8") +
                         "&cover=" +
@@ -59,8 +61,8 @@ class HomePageDataComponent : IHomePageDataComponent {
                         "&desc=" +
                         URLEncoder.encode(desc, "UTF-8")
 
-                data.add(MediaInfo1Data(title, coverImageUrl, "", "", userName).apply {
-                    spanSize = 4
+                data.add(MediaInfo2Data(title, coverImageUrl!!, "", "", userName).apply {
+                    spanSize = 8
                     action = DetailAction.obtain(url)
                 })
             }
@@ -68,5 +70,4 @@ class HomePageDataComponent : IHomePageDataComponent {
 
         return data
     }
-
 }
