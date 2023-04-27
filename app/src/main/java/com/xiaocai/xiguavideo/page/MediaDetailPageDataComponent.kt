@@ -2,12 +2,14 @@ package com.xiaocai.xiguavideo.page
 
 import android.graphics.Color
 import android.net.Uri
+import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
 import com.su.mediabox.pluginapi.Constant
 import com.su.mediabox.pluginapi.action.PlayAction
 import com.su.mediabox.pluginapi.components.IMediaDetailPageDataComponent
 import com.su.mediabox.pluginapi.data.*
+import com.su.mediabox.pluginapi.util.TextUtil
 import com.su.mediabox.pluginapi.util.WebUtil
 import com.su.mediabox.pluginapi.util.WebUtilIns
 import com.xiaocai.xiguavideo.http.HttpUtils
@@ -50,41 +52,64 @@ class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
             desc = "?"
         }
         duration = uri0.getQueryParameter("duration")!!.toInt()
-        Log.d(TAG, "coverImage: $coverImage")
 
-        val videoUrls = WebUtilIns.interceptResource(partUrl, "(.*)video/urls(.*)")
+        Log.d(TAG, "host: " + uri0.host)
+        Log.d(TAG, "path: " + uri0.path)
+
+
+        val videoUrls = WebUtilIns.interceptResource("https://" + uri0.host + uri0.path, "[(.*)video/urls(.*)][(.*)mime_type=video_mp4(.*)]", loadPolicy = object : WebUtil.LoadPolicy by WebUtil.DefaultLoadPolicy {
+            override val timeOut: Long
+                get() = 4000
+        })
         Log.d(TAG, "videoUrls: $videoUrls")
-
-        val uri = Uri.parse(videoUrls)
-        val callback = uri.getQueryParameter("callback")
-        Log.d(TAG, "callback: $callback")
-        val ret = HttpUtils.syncGet(TAG, videoUrls, Headers.headersOf())
-//        Log.d(TAG, "ret: $ret")
-        val json = ret.substring(callback!!.length + 1, ret.length - 1)
-//        Log.d(TAG, "json: $json")
-
 
         val videoInfoList = mutableListOf<EpisodeData>()
         val episodeListData = EpisodeListData(videoInfoList).apply {
 
         }
 
-        val jsonObject = JSONObject(json)
-        if (jsonObject.optInt("code") == 0) {
-            val dataJSONObject = jsonObject.optJSONObject("data")
-            val videoList = dataJSONObject?.optJSONObject("video_list")
-            val keys = videoList?.keys()
-
-            while (keys!!.hasNext()) {
-                val video = videoList.getJSONObject(keys.next())
-                val mainUrl = video.getString("main_url")
-                val vwidth = video.getInt("vwidth")
-                val vheight = video.getInt("vheight")
-                val definition = video.getString("definition")
-
-                videoInfoList.add(EpisodeData(definition, String(Base64.decode(mainUrl, Base64.DEFAULT))).apply {
-                    action = PlayAction.obtain(url, coverUrl = coverImage, videoName = title)
+        val uri = Uri.parse(videoUrls)
+        val callback = uri.getQueryParameter("callback")
+        Log.d(TAG, "callback: $callback")
+        val mime_type = uri.getQueryParameter("mime_type")
+        if (mime_type == "video_mp4") {
+            videoInfoList.add(
+                EpisodeData(
+                    "未知",
+                    videoUrls
+                ).apply {
+                    action =
+                        PlayAction.obtain(url, coverUrl = coverImage, videoName = title)
                 })
+        } else {
+            val ret = HttpUtils.syncGet(TAG, videoUrls, Headers.headersOf())
+//        Log.d(TAG, "ret: $ret")
+            val json = ret.substring(callback!!.length + 1, ret.length - 1)
+//        Log.d(TAG, "json: $json")
+
+
+            val jsonObject = JSONObject(json)
+            if (jsonObject.optInt("code") == 0) {
+                val dataJSONObject = jsonObject.optJSONObject("data")
+                val videoList = dataJSONObject?.optJSONObject("video_list")
+                val keys = videoList?.keys()
+
+                while (keys!!.hasNext()) {
+                    val video = videoList.getJSONObject(keys.next())
+                    val mainUrl = video.getString("main_url")
+                    val vwidth = video.getInt("vwidth")
+                    val vheight = video.getInt("vheight")
+                    val definition = video.getString("definition")
+
+                    videoInfoList.add(
+                        EpisodeData(
+                            definition,
+                            String(Base64.decode(mainUrl, Base64.DEFAULT))
+                        ).apply {
+                            action =
+                                PlayAction.obtain(url, coverUrl = coverImage, videoName = title)
+                        })
+                }
             }
         }
 

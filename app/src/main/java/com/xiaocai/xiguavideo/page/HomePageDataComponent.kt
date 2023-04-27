@@ -55,7 +55,8 @@ class HomePageDataComponent : IHomePageDataComponent {
                         "&publishTime=$publishTime" +
                         "&play_count=$play_count" +
                         "&duration=$duration" +
-                        "&name=$userName" +
+                        "&name=" +
+                        URLEncoder.encode(userName, "UTF-8") +
                         "&desc=" +
                         URLEncoder.encode(desc, "UTF-8")
 

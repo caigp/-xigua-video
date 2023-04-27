@@ -21,7 +21,8 @@ class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
         val data = mutableListOf<BaseData>()
 
         val offset = (page - 1) * 10
-        url = "https://m.ixigua.com/video/m/search/search_content/?aid=3586&keyword=$keyWord&device_id=&offset=$offset&count=10"
+        val kw = URLEncoder.encode(keyWord, "UTF-8")
+        url = "https://m.ixigua.com/video/m/search/search_content/?aid=3586&keyword=$kw&device_id=&offset=$offset&count=10"
         Log.d(TAG, "url=$url")
 
         val headers = Headers.Builder()
@@ -31,7 +32,7 @@ class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
         val jsonObject = JSONObject(json)
         val message = jsonObject.getString("message")
         if ("success" == message) {
-            val dataJSONArray = jsonObject.getJSONArray("data")
+            val dataJSONArray = jsonObject.optJSONArray("data") ?: return data
             val length = dataJSONArray.length()
             for (i in 0 until length) {
                 val videoDataJSONObject = dataJSONArray[i] as JSONObject
@@ -40,7 +41,7 @@ class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
                     continue
                 }
                 val play_count = videoDataJSONObject.optLong("play_count")
-                val duration = videoDataJSONObject.optInt("duration")
+                val duration = videoDataJSONObject.optInt("video_duration")
                 val publishTime = videoDataJSONObject.optLong("publish_time", 0)
                 val title = videoDataJSONObject.getString("title")
                 val video_detail_info = videoDataJSONObject.optJSONObject("video_detail_info")
@@ -57,7 +58,8 @@ class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
                         "&publishTime=$publishTime" +
                         "&play_count=$play_count" +
                         "&duration=$duration" +
-                        "&name=$userName" +
+                        "&name=" +
+                        URLEncoder.encode(userName, "UTF-8") +
                         "&desc=" +
                         URLEncoder.encode(desc, "UTF-8")
 

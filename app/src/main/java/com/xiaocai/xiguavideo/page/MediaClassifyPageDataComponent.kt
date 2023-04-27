@@ -21,9 +21,27 @@ class MediaClassifyPageDataComponent : IMediaClassifyPageDataComponent {
 
     override suspend fun getClassifyItemData(): List<ClassifyItemData> {
         return listOf(ClassifyItemData().apply {
-            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "666", "555")
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349533351&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "VLOG")
         }, ClassifyItemData().apply {
-            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "444", "333")
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=61887739376&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "游戏")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=6141508391&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "美食")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349531488&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "手工")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=61887739390&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "农人")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=61887739345&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "综艺")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=61887739369&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "搞笑")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=61887739368&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "音乐")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=6141508395&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "儿童")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349530916&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "NBA")
+        }, ClassifyItemData().apply {
+            action = ClassifyAction.obtain("https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=6141508406&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more", "", "宠物")
         })
     }
 
@@ -33,7 +51,7 @@ class MediaClassifyPageDataComponent : IMediaClassifyPageDataComponent {
     ): List<BaseData> {
         val data = mutableListOf<BaseData>()
 
-        url = "https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more"
+        url = classifyAction.url
         Log.d(TAG, "url=$url")
 
         val headers = Headers.Builder()
