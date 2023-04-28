@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.XiguaVideo"
+        android:theme="@android:style/Theme.Material.Light.DarkActionBar"
         tools:targetApi="31">
 
         <!--第一步：每个插件必须注册这里才能被识别为插件-->
