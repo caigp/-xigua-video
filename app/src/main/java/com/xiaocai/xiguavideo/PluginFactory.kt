@@ -20,5 +20,5 @@ class PluginFactory : IPluginFactory() {
     } as? T
 
     override val host: String
-        get() = Constant.host
+        get() = "https://www.ixigua.com/"
 }
