@@ -9,16 +9,13 @@ import com.su.mediabox.pluginapi.Constant
 import com.su.mediabox.pluginapi.action.PlayAction
 import com.su.mediabox.pluginapi.components.IMediaDetailPageDataComponent
 import com.su.mediabox.pluginapi.data.*
-import com.su.mediabox.pluginapi.util.TextUtil
 import com.su.mediabox.pluginapi.util.WebUtil
 import com.su.mediabox.pluginapi.util.WebUtilIns
 import com.xiaocai.xiguavideo.http.HttpUtils
 import com.xiaocai.xiguavideo.http.TimeUtils
 import okhttp3.Headers
 import org.json.JSONObject
-import org.jsoup.Jsoup
-import java.net.URLDecoder
-import java.text.SimpleDateFormat
+import java.net.URLEncoder
 
 class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
     private val TAG = "MediaDetailPageDataComp"
@@ -37,6 +34,8 @@ class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
 
     private var duration: Int = 0
 
+    private var groupId: String = ""
+
     override suspend fun getMediaDetailData(partUrl: String): Triple<String, String, List<BaseData>> {
         Log.d(TAG, "partUrl: $partUrl")
 
@@ -52,19 +51,21 @@ class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
             desc = "?"
         }
         duration = uri0.getQueryParameter("duration")!!.toInt()
+        groupId = uri0.getQueryParameter("groupId")!!
 
         Log.d(TAG, "host: " + uri0.host)
         Log.d(TAG, "path: " + uri0.path)
 
-
         val videoUrls = WebUtilIns.interceptResource("https://" + uri0.host + uri0.path, ".*(xgplayer|video_mp4).*", loadPolicy = object : WebUtil.LoadPolicy by WebUtil.DefaultLoadPolicy {
-            override val timeOut: Long
-                get() = 5000
+            override val timeOut: Long = 5000
+            override val userAgentString: String = "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/106.0.0.0"
         })
         Log.d(TAG, "videoUrls: $videoUrls")
         val videoInfoList = mutableListOf<EpisodeData>()
         val episodeListData = EpisodeListData(videoInfoList)
 
+        val d = duration * 1000
+        val danmaku = "group_id=$groupId&start_time=0&end_time=$d"
         if (TextUtils.isEmpty(videoUrls)) {
 
         } else {
@@ -76,10 +77,10 @@ class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
                 videoInfoList.add(
                     EpisodeData(
                         "360p",
-                        videoUrls
+                        videoUrls + "&danmaku=" + URLEncoder.encode(danmaku, "UTF-8")
                     ).apply {
                         action =
-                            PlayAction.obtain(url, coverUrl = coverImage, videoName = title)
+                            PlayAction.obtain(url, coverUrl = coverImage, videoName = title, detailPartUrl = "123")
                     })
             } else {
                 val ret = HttpUtils.syncGet(TAG, videoUrls, Headers.headersOf())
@@ -103,10 +104,10 @@ class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
                         videoInfoList.add(
                             EpisodeData(
                                 definition,
-                                String(Base64.decode(mainUrl, Base64.DEFAULT))
+                                String(Base64.decode(mainUrl, Base64.DEFAULT)) + "&danmaku=" + URLEncoder.encode(danmaku, "UTF-8")
                             ).apply {
                                 action =
-                                    PlayAction.obtain(url, coverUrl = coverImage, videoName = title)
+                                    PlayAction.obtain(url, coverUrl = coverImage, videoName = title, detailPartUrl = "123")
                             })
                     }
                 }

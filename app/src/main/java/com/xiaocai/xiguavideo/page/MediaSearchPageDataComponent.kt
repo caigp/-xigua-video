@@ -1,5 +1,6 @@
 package com.xiaocai.xiguavideo.page
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.su.mediabox.pluginapi.action.DetailAction
 import com.su.mediabox.pluginapi.components.IMediaSearchPageDataComponent
@@ -62,7 +63,9 @@ class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
                             "&name=" +
                             URLEncoder.encode(userName, "UTF-8") +
                             "&desc=" +
-                            URLEncoder.encode(desc, "UTF-8")
+                            URLEncoder.encode(desc, "UTF-8") +
+                            "&groupId=" +
+                            URLEncoder.encode(groupId, "UTF-8")
 
                     data.add(MediaInfo2Data(title, coverImageUrl!!, "", playCount.toString() + "次观看", userName).apply {
                         spanSize = 8

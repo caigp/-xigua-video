@@ -58,7 +58,9 @@ class HomePageDataComponent : IHomePageDataComponent {
                         "&name=" +
                         URLEncoder.encode(userName, "UTF-8") +
                         "&desc=" +
-                        URLEncoder.encode(desc, "UTF-8")
+                        URLEncoder.encode(desc, "UTF-8") +
+                        "&groupId=" +
+                        URLEncoder.encode(groupId, "UTF-8")
 
                 data.add(MediaInfo1Data(title, coverImageUrl, "", "", userName).apply {
                     spanSize = 4
