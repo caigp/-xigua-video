@@ -86,7 +86,9 @@ class MediaClassifyPageDataComponent : IMediaClassifyPageDataComponent {
                         "&duration=$duration" +
                         "&name=$userName" +
                         "&desc=" +
-                        URLEncoder.encode(desc, "UTF-8")
+                        URLEncoder.encode(desc, "UTF-8") +
+                        "&groupId=" +
+                        URLEncoder.encode(groupId, "UTF-8")
 
                 data.add(MediaInfo1Data(title, coverImageUrl, "", "", userName).apply {
                     spanSize = 4
