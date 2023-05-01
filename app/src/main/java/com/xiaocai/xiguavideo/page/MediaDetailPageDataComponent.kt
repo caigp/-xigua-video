@@ -5,14 +5,13 @@ import android.net.Uri
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
-import com.su.mediabox.pluginapi.Constant
 import com.su.mediabox.pluginapi.action.PlayAction
 import com.su.mediabox.pluginapi.components.IMediaDetailPageDataComponent
 import com.su.mediabox.pluginapi.data.*
 import com.su.mediabox.pluginapi.util.WebUtil
 import com.su.mediabox.pluginapi.util.WebUtilIns
 import com.xiaocai.xiguavideo.http.HttpUtils
-import com.xiaocai.xiguavideo.http.TimeUtils
+import com.xiaocai.xiguavideo.utils.TimeUtils
 import okhttp3.Headers
 import org.json.JSONObject
 import java.net.URLEncoder
@@ -43,7 +42,8 @@ class MediaDetailPageDataComponent : IMediaDetailPageDataComponent {
         title = uri0.getQueryParameter("title").toString()
         coverImage = uri0.getQueryParameter("cover").toString()
         val publishTime = uri0.getQueryParameter("publishTime")!!.toLong()
-        _publishTime = TimeUtils.format(TimeUtils.PATTERN, publishTime * 1000)
+        _publishTime = TimeUtils.format(
+            TimeUtils.PATTERN, publishTime * 1000)
         play_count = uri0.getQueryParameter("play_count")!!.toLong()
         name = uri0.getQueryParameter("name")!!
         desc = uri0.getQueryParameter("desc")!!

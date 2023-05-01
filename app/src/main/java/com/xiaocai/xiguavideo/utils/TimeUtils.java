@@ -1,4 +1,4 @@
-package com.xiaocai.xiguavideo.http;
+package com.xiaocai.xiguavideo.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

@@ -1,12 +1,6 @@
-package com.xiaocai.xiguavideo.page
+package com.xiaocai.xiguavideo.utils
 
-import android.util.Log
-import com.su.mediabox.pluginapi.action.Action
-import com.su.mediabox.pluginapi.action.ClassifyAction
 import com.su.mediabox.pluginapi.action.DetailAction
-import com.su.mediabox.pluginapi.action.PlayAction
-import com.su.mediabox.pluginapi.components.ICustomPageDataComponent
-import com.su.mediabox.pluginapi.components.IMediaClassifyPageDataComponent
 import com.su.mediabox.pluginapi.data.BaseData
 import com.su.mediabox.pluginapi.data.MediaInfo1Data
 import com.xiaocai.xiguavideo.http.HttpUtils
@@ -14,28 +8,10 @@ import okhttp3.Headers
 import org.json.JSONObject
 import java.net.URLEncoder
 
-class MyPageDataComponent : ICustomPageDataComponent {
+object DataUtils {
 
-    private val TAG = MyPageDataComponent::class.java.simpleName
-
-    private var url: String? = null
-
-    override fun isShowBack(): Boolean {
-        return false
-    }
-
-    override fun menus(): List<Action> {
-        return listOf(PlayAction.obtain(""))
-    }
-
-    override val pageName: String
-        get() = "西瓜视频"
-
-    override suspend fun getData(page: Int): List<BaseData>? {
+    fun getDataList(TAG: String, url: String): List<BaseData> {
         val data = mutableListOf<BaseData>()
-
-        url = "https://m.ixigua.com/api/feedv2/feedById?aid=3586&channelId=94349555027&request_from=710&queryCount=1&count=10&offset=0&refresh_type=load_more"
-        Log.d(TAG, "url=$url")
 
         val headers = Headers.Builder()
             .add("cookie", "ttwid=7225789753688655397;ixigua-a-s=0;")
@@ -67,9 +43,12 @@ class MyPageDataComponent : ICustomPageDataComponent {
                         "&publishTime=$publishTime" +
                         "&play_count=$play_count" +
                         "&duration=$duration" +
-                        "&name=$userName" +
+                        "&name=" +
+                        URLEncoder.encode(userName, "UTF-8") +
                         "&desc=" +
-                        URLEncoder.encode(desc, "UTF-8")
+                        URLEncoder.encode(desc, "UTF-8") +
+                        "&groupId=" +
+                        URLEncoder.encode(groupId, "UTF-8")
 
                 data.add(MediaInfo1Data(title, coverImageUrl, "", "", userName).apply {
                     spanSize = 4
@@ -77,7 +56,6 @@ class MyPageDataComponent : ICustomPageDataComponent {
                 })
             }
         }
-
         return data
     }
 }

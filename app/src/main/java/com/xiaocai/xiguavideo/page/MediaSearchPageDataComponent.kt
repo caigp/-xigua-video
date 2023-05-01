@@ -1,11 +1,9 @@
 package com.xiaocai.xiguavideo.page
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.su.mediabox.pluginapi.action.DetailAction
 import com.su.mediabox.pluginapi.components.IMediaSearchPageDataComponent
 import com.su.mediabox.pluginapi.data.BaseData
-import com.su.mediabox.pluginapi.data.MediaInfo1Data
 import com.su.mediabox.pluginapi.data.MediaInfo2Data
 import com.xiaocai.xiguavideo.http.HttpUtils
 import okhttp3.Headers

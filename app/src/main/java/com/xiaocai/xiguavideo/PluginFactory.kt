@@ -10,7 +10,6 @@ import com.xiaocai.xiguavideo.page.*
 class PluginFactory : IPluginFactory() {
 
     override fun <T : IBasePageDataComponent> createComponent(clazz: Class<T>) = when(clazz) {
-        MyPageDataComponent::class.java -> MyPageDataComponent()
         IHomePageDataComponent::class.java -> HomePageDataComponent()
         IMediaDetailPageDataComponent::class.java -> MediaDetailPageDataComponent()
         IVideoPlayPageDataComponent::class.java -> VideoPlayPageDataComponent()
