@@ -1,8 +1,10 @@
 package com.xiaocai.xiguavideo.utils
 
+import android.util.Log
 import com.su.mediabox.pluginapi.action.DetailAction
 import com.su.mediabox.pluginapi.data.BaseData
 import com.su.mediabox.pluginapi.data.MediaInfo1Data
+import com.xiaocai.xiguavideo.MyApp
 import com.xiaocai.xiguavideo.http.HttpUtils
 import okhttp3.Headers
 import org.json.JSONObject
@@ -12,9 +14,9 @@ object DataUtils {
 
     fun getDataList(TAG: String, url: String): List<BaseData> {
         val data = mutableListOf<BaseData>()
-
+        Log.d(TAG, MyApp.ttwid.toString())
         val headers = Headers.Builder()
-            .add("cookie", "ttwid=7225789753688655397;ixigua-a-s=0;")
+            .add("cookie", "ttwid=${MyApp.ttwid};ixigua-a-s=0;")
             .build()
         val json = HttpUtils.syncGet(TAG, url, headers)
         val jsonObject = JSONObject(json)

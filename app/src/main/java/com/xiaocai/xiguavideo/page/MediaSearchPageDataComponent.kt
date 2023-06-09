@@ -5,6 +5,7 @@ import com.su.mediabox.pluginapi.action.DetailAction
 import com.su.mediabox.pluginapi.components.IMediaSearchPageDataComponent
 import com.su.mediabox.pluginapi.data.BaseData
 import com.su.mediabox.pluginapi.data.MediaInfo2Data
+import com.xiaocai.xiguavideo.MyApp
 import com.xiaocai.xiguavideo.http.HttpUtils
 import okhttp3.Headers
 import org.json.JSONObject
@@ -25,7 +26,7 @@ class MediaSearchPageDataComponent : IMediaSearchPageDataComponent {
         Log.d(TAG, "url=$url")
 
         val headers = Headers.Builder()
-            .add("cookie", "ttwid=7225789753688655397;ixigua-a-s=0;")
+            .add("cookie", "ttwid=${MyApp.ttwid};ixigua-a-s=0;")
             .build()
         val json = HttpUtils.syncGet(TAG, url, headers)
         if (json.startsWith("{") && json.endsWith("}")) {
